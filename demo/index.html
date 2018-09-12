@@ -1,0 +1,147 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>RBush Tree Visualization</title>
+    <link rel="stylesheet" href="https://code.cdn.mozilla.net/fonts/fira.css">
+    <link rel="stylesheet" href="js/treant/Treant.css">
+
+    <style>
+        *{font-family: 'Fira Sans', sans-serif;}
+        .bold{font-weight:bold;}
+        .italic{font-style: italic;}
+        .oblique{font-style: oblique;}
+
+        body {
+            background-color: #CA895F;
+        }
+
+        #canvas {
+            background-color: #CF5C36;
+        }
+
+        h1 {
+            color: #FFCA3A;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button.delete {
+            color: #ffffff;
+            background:#343330;
+            padding: 5px 10px 5px 10px;
+            text-decoration: none;
+            border: 0px solid #343330;
+            float: right;
+        }
+
+        button.delete:hover {
+            background: #CF5C36;
+            text-decoration: none;
+        }
+
+        .result {
+            line-height:25px;
+            margin-bottom:10px;
+        }
+
+        a {
+           color: #FFCA3A !important;
+        }
+
+        #tree {
+            float:left;
+            margin-left:15px;
+            margin-top:30px;
+            margin-bottom: 20px;
+            width:100%;
+            height:100%;
+            display: none;
+            min-width:300px;
+            min-height:200px;
+        }
+
+        /* optional Container STYLES */
+        .node { color: #343330; border: 2px solid #343330; border-radius: 3px; }
+        .node p { font-size: 20px; line-height: 20px; height: 20px; font-weight: bold; padding: 3px; margin: 0; }
+
+        #tutorial {
+            float:left;
+            margin-left:30px;
+            margin-top:-28px;
+            width:400px;
+        }
+
+        #headline {
+            margin-left:15px;
+            font-size:250%;
+            margin-bottom:0px;
+        }
+
+        #canvasContainer {
+            float:left;
+            width:700px;
+            margin-left:15px;
+        }
+
+    </style>
+</head>
+<body>
+<h1 id="headline">R-tree visualization by Tomas Jadrny</h1>
+<div>
+    <div id="canvasContainer">
+        <canvas id="canvas" width="700" height="500"></canvas>
+        <button class="delete" id="addRandom">ADD N RANDOM</button>
+        <input width="3" value="1" id="addN" style="float:right;width:24px;height:24px;border: 1px solid #343330;padding-left:5px;"/>
+        <span style="float:right;">&nbsp;&nbsp;&nbsp;</span>
+        <button class="delete" id="back">REMOVE N NEWEST</button>
+        <input width="3" value="1" id="removeN" style="float:right;width:24px;height:24px;border: 1px solid #343330;padding-left:5px;"/>
+        <span style="float:right;">&nbsp;&nbsp;&nbsp;</span>
+        <button class="delete" id="toggleTree">HIERARCHICAL VIEW TOGGLE</button>
+        <span id="coordinates" style="float:left;margin-left:10px;line-height: 200%;">X: 0, Y: 0</span>
+
+    </div>
+    <div id="results" style="float:left;width:160px;margin-left:20px;">
+    </div>
+
+    <div id="tutorial">
+        <h1>How to use this application</h1>
+        <p>This application is designed to visualize R-tree (trees that store spatial data, e.g. geographical coordinates).
+        <p>You can click on the orange canvas on the left to add a point. The application will render <i>minimum boundary rectangle</i>, when there are enough points.
+        <p>You can select multiple points by dragging mouse over it. Selected points will be displayed next to the canvas and you can hover or delete the point, or delete the whole selection.</p>
+        <p>Each rectangle is indexed by a number. 0 is the root and other numbers represent the tree.</p>
+        <p>Below the canvas there are buttons - You can specify, how many points should be added or deleted. There are also current coordinates of the mouse cursor on the canvas. You can also enable hierarchical view.</p>
+        <p>This application uses <a target="_blank" href="https://github.com/mourner/rbush">RBush project</a>.</p>
+    </div>
+
+    <div id="tree" style="display:none;">
+        <div class="chart" id="hierarchicalChart">
+        </div>
+    </div>
+</div>
+
+
+<script src="https://npmcdn.com/rbush@2.0.1/rbush.js"></script>
+<script src="js/treant/vendor/raphael.js"></script>
+<script src="js/treant/Treant.js"></script>
+
+
+<script src="js/viz.js"></script>
+<script>
+    var tree = rbush(3);
+
+    document.getElementById('canvas').onmousedown = onMouseDown;
+    document.getElementById('canvas').onmouseup = onMouseUp;
+    document.getElementById('canvas').onmousemove = onMouseMove;
+    document.getElementById('addRandom').onclick = addRandom;
+    document.getElementById('back').onclick = deleteNewest;
+    document.getElementById('toggleTree').onclick = function() {
+        toggledisplay("tree");
+        draw();
+        window.scrollTo(0,document.body.scrollHeight + 1000);
+    };
+</script>
+</body>
+</html>

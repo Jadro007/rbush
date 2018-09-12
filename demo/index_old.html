@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Load the Paper.js library -->
+    <script type="text/javascript" src="js/paper-full.js"></script>
+    <!-- Define inlined PaperScript associate it with myCanvas -->
+    <script type="text/javascript" src="node_modules/rbush/rbush.js"></script>
+    <script type="text/paperscript" canvas="myCanvas">
+
+
+        var rtree = rbush();
+        // Create a Paper.js Path to draw a line into it:
+        var path = new Path();
+        // Give the stroke a color
+        path.strokeColor = 'black';
+        var start = new Point(300, 100);
+        // Move to start and draw a line from there
+        path.moveTo(start);
+        //} Note the plus operator on Point objects.
+        // PaperScript does that for us, and much more!
+        path.lineTo(start + [100, -50]);
+
+
+        function onMouseUp(event) {
+            // The mouse was released, so we add the new location as the end
+            // segment of the line.
+
+            var item = {
+                minX: event.point.x,
+                minY: event.point.y,
+                maxX: event.point.x,
+                maxY: event.point.y,
+                foo: 'bar'
+            };
+            rtree.insert(item);
+            var circle = new Path.Circle(event.middlePoint, 2);
+            circle.fillColor = 'red';
+        }
+
+
+    </script>
+</head>
+<body>
+<canvas id="myCanvas" resize style="border:1px solid black;width:500px;height: 500px" ></canvas>
+</body>
+</html>
